@@ -229,7 +229,7 @@ $brands = mysqli_fetch_all($brand_result, MYSQLI_ASSOC);
                           ?>
                           <img src="<?= $img_src ?>" class="rounded-1" style="width: 44px; height: 44px; object-fit: cover;" alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?q=80&w=200&auto=format&fit=crop';">
                           <div>
-                            <div class="fw-semibold"><a href="product-edit.html?id=<?= $product['id'] ?>" class="text-dark"><?= htmlspecialchars($product['name']) ?></a></div>
+                            <div class="fw-semibold"><a href="product-edit.php?id=<?= $product['id'] ?>" class="text-dark"><?= htmlspecialchars($product['name']) ?></a></div>
                             <small class="text-muted"><?= htmlspecialchars($product['brand_name'] ?? 'NOVA FORM') ?></small>
                           </div>
                         </div>
@@ -257,7 +257,7 @@ $brands = mysqli_fetch_all($brand_result, MYSQLI_ASSOC);
                       <td>
                         <div class="d-flex gap-1">
                           <a href="../front-site/product-details.html?id=<?= $product['id'] ?>" target="_blank" class="btn btn-sm btn-outline-secondary py-1 px-2" title="View in store"><i class="bi bi-eye"></i></a>
-                          <a href="product-edit.html?id=<?= $product['id'] ?>" class="btn btn-sm btn-outline-dark py-1 px-2" title="Edit product"><i class="bi bi-pencil"></i></a>
+                          <a href="product-edit.php?id=<?= $product['id'] ?>" class="btn btn-sm btn-outline-dark py-1 px-2" title="Edit product"><i class="bi bi-pencil"></i></a>
                           <button class="btn btn-sm btn-outline-danger py-1 px-2 btn-trigger-delete" data-name="<?= htmlspecialchars($product['name']) ?>" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" title="Delete product"><i class="bi bi-trash"></i></button>
                         </div>
                       </td>

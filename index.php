@@ -336,7 +336,7 @@
                   <div class="d-flex align-items-center gap-3">
                     <img src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?q=80&w=800&auto=format&fit=crop" class="rounded-1" style="width: 44px; height: 44px; object-fit: cover;" alt="Regal Wholecut Oxford">
                     <div>
-                      <h6 class="mb-0 fs-6 fw-semibold"><a href="product-edit.html" class="text-dark">Regal Wholecut Oxford</a></h6>
+                      <h6 class="mb-0 fs-6 fw-semibold"><a href="product-edit.php" class="text-dark">Regal Wholecut Oxford</a></h6>
                       <small class="text-muted">Formal Shoes &bull; 28 in stock</small>
                     </div>
                   </div>
@@ -350,7 +350,7 @@
                   <div class="d-flex align-items-center gap-3">
                     <img src="https://images.unsplash.com/photo-1533867617858-e7b97e060509?q=80&w=800&auto=format&fit=crop" class="rounded-1" style="width: 44px; height: 44px; object-fit: cover;" alt="Sienna Burnished Penny Loafer">
                     <div>
-                      <h6 class="mb-0 fs-6 fw-semibold"><a href="product-edit.html" class="text-dark">Sienna Burnished Penny Loafer</a></h6>
+                      <h6 class="mb-0 fs-6 fw-semibold"><a href="product-edit.php" class="text-dark">Sienna Burnished Penny Loafer</a></h6>
                       <small class="text-muted">Loafers &bull; 19 in stock</small>
                     </div>
                   </div>
@@ -364,7 +364,7 @@
                   <div class="d-flex align-items-center gap-3">
                     <img src="https://images.unsplash.com/photo-1560769629-975ec94e6a86?q=80&w=800&auto=format&fit=crop" class="rounded-1" style="width: 44px; height: 44px; object-fit: cover;" alt="Kensington Braided Tassel Loafer">
                     <div>
-                      <h6 class="mb-0 fs-6 fw-semibold"><a href="product-edit.html" class="text-dark">Kensington Braided Tassel Loafer</a></h6>
+                      <h6 class="mb-0 fs-6 fw-semibold"><a href="product-edit.php" class="text-dark">Kensington Braided Tassel Loafer</a></h6>
                       <small class="text-muted">Loafers &bull; 14 in stock</small>
                     </div>
                   </div>
@@ -378,7 +378,7 @@
                   <div class="d-flex align-items-center gap-3">
                     <img src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?q=80&w=800&auto=format&fit=crop" class="rounded-1" style="width: 44px; height: 44px; object-fit: cover;" alt="Mayfair Double Monk Strap">
                     <div>
-                      <h6 class="mb-0 fs-6 fw-semibold"><a href="product-edit.html" class="text-dark">Mayfair Double Monk Strap</a></h6>
+                      <h6 class="mb-0 fs-6 fw-semibold"><a href="product-edit.php" class="text-dark">Mayfair Double Monk Strap</a></h6>
                       <small class="text-muted">Formal Shoes &bull; 12 in stock</small>
                     </div>
                   </div>

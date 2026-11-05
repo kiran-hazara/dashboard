@@ -1,3 +1,72 @@
+<?php
+require_once __DIR__ . "/settings/session_start.php";
+require_once __DIR__ . "/settings/auth_check.php";
+require_once __DIR__ . "/settings/db.php";
+
+// 1. Database Connection (shop_db)
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "stepupstore_db";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Connection check karein
+if ($conn->connect_error) {
+    die("Database connection failed: " . $conn->connect_error);
+}
+
+// Success ya Error message store karne ke liye variables
+$success_msg = "";
+$error_msg = "";
+
+// 2. Product ID get karein URL se
+if (isset($_GET['id']) && !empty($_GET['id'])) {
+    $product_id = intval($_GET['id']); // Security ke liye integer me convert kiya
+
+    // Fetch existing product data
+    $stmt = $conn->prepare("SELECT * FROM products WHERE id = ?");
+    $stmt->bind_param("i", $product_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $product = $result->fetch_assoc();
+    } else {
+        die("Product nahi mila!");
+    }
+    $stmt->close();
+} else {
+    die("Invalid Product ID!");
+}
+
+// 3. Update Button click hone par data update karein
+if (isset($_POST['update_product'])) {
+    $name = $_POST['name'];
+    $price = $_POST['price'];
+    $description = $_POST['description'];
+
+    // Update Query prepared statement ke sath (SQL Injection se bachne ke liye)
+    $update_stmt = $conn->prepare("UPDATE products SET name = ?, price = ?, description = ? WHERE id = ?");
+    $update_stmt->bind_param("sdsi", $name, $price, $description, $product_id);
+
+    if ($update_stmt->execute()) {
+        $success_msg = "Product successfully update ho gaya hy!";
+        
+        // Form me updated data dikhane ke liye dobara fetch karein
+        $product['name'] = $name;
+        $product['price'] = $price;
+        $product['description'] = $description;
+    } else {
+        $error_msg = "Someting went wrong! Data update nahi hoa: " . $conn->error;
+    }
+    $update_stmt->close();
+}
+
+$conn->close();
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,7 +158,7 @@
       </div>
     </div>
 
-    <form class="admin-demo-form" data-success-msg="Changes to 'Regal Wholecut Oxford' updated successfully!">
+        <form action="actions/create_product_action.php" method="POST" enctype="multipart/form-data">
       <div class="row g-4">
         
         <div class="col-lg-8">
