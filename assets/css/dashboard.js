@@ -78,8 +78,11 @@ function initDemoModalsAndAlerts() {
   document.querySelectorAll('.btn-trigger-delete').forEach(btn => {
     btn.addEventListener('click', function() {
       const itemName = this.getAttribute('data-name') || 'this item';
+      const itemId = this.getAttribute('data-id');
       const deleteTarget = document.getElementById('deleteTargetName');
+      const deleteInput = document.getElementById('deleteProductId');
       if (deleteTarget) deleteTarget.textContent = itemName;
+      if (deleteInput && itemId) deleteInput.value = itemId;
     });
   });
 

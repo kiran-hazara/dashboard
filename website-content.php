@@ -1,22 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+require_once __DIR__ . "/settings/session_start.php";
+require_once __DIR__ . "/settings/auth_check.php";
+require_once __DIR__ . "/settings/db.php";
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Website Content | NOVA FORM Admin Dashboard</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="assets/css/dashboard.css">
-  <link rel="stylesheet" href="assets/css/responsive.css">
-</head>
+$errors = $_SESSION['errors'] ?? [];
+unset($_SESSION['errors']);
+
+$success = $_SESSION['success'] ?? '';
+unset($_SESSION['success']);
+
+// Fetch current website content settings from website_content table
+$query = "SELECT * FROM cms_settings WHERE id = 1 LIMIT 1";
+$result = mysqli_query($conn, $query);
+$content = ($result && mysqli_num_rows($result) > 0) ? mysqli_fetch_assoc($result) : [];
+?>
+
+<?php require_once __DIR__ . "/partials/header.php" ?>
 
 <body>
 
   <div class="admin-wrapper">
 
     <!-- Admin Sidebar -->
-    <?php require_once __DIR__ . "/partials/sidebar.php" ?>
+    <?php require_once __DIR__ . "/partials/sidebar.php"; ?>
 
 
     <div class="admin-main">
@@ -71,7 +77,7 @@
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <li><a class="dropdown-item text-danger" href="login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+              <li><a class="dropdown-item text-danger" href="actions/logout_action.php"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
             </ul>
           </div>
         </div>
@@ -80,6 +86,24 @@
 
       <main class="admin-content">
 
+        <?php if (!empty($errors)) : ?>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <ul class="mb-0">
+              <?php foreach ($errors as $error) : ?>
+                <li><?= htmlspecialchars($error) ?></li>
+              <?php endforeach; ?>
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        <?php endif; ?>
+
+        <?php if (!empty($success)) : ?>
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i><?= htmlspecialchars($success) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        <?php endif; ?>
+
         <div class="d-flex justify-content-between align-items-center mb-4">
           <div>
             <h1 class="page-title">Website Content Editor (CMS)</h1>
@@ -87,7 +111,7 @@
           </div>
         </div>
 
-        <form class="admin-demo-form" data-success-msg="Storefront homepage content updated!">
+        <form action="actions/website_content_action.php" method="POST">
           <div class="row g-4">
 
             <div class="col-lg-8">
@@ -99,16 +123,16 @@
                 </div>
                 <div class="admin-card-body">
                   <div class="mb-3">
-                    <label class="form-label small fw-bold">Main Headline</label>
-                    <input type="text" class="form-control" value="Step Into Uncompromising Refinement.">
+                    <label class="form-label small fw-bold">Main Headline *</label>
+                    <input type="text" name="hero_headline" class="form-control" value="<?= htmlspecialchars($content['hero_headline'] ?? 'Step Into Uncompromising Refinement.') ?>" required>
                   </div>
                   <div class="mb-3">
                     <label class="form-label small fw-bold">Subtitle</label>
-                    <input type="text" class="form-control" value="Autumn / Winter 2026 Collection">
+                    <input type="text" name="hero_subtitle" class="form-control" value="<?= htmlspecialchars($content['hero_subtitle'] ?? 'Autumn / Winter 2026 Collection') ?>">
                   </div>
                   <div class="mb-3">
                     <label class="form-label small fw-bold">Lead Paragraph</label>
-                    <textarea class="form-control" rows="2">Handcrafted from full-grain Italian calfskin and Goodyear-welted for generations of distinction. Engineered for the modern Pakistani gentleman.</textarea>
+                    <textarea name="hero_lead" class="form-control" rows="3"><?= htmlspecialchars($content['hero_lead'] ?? 'Handcrafted from full-grain Italian calfskin and Goodyear-welted for generations of distinction. Engineered for the modern Pakistani gentleman.') ?></textarea>
                   </div>
                 </div>
               </div>
@@ -121,16 +145,16 @@
                 <div class="admin-card-body">
                   <div class="mb-3">
                     <label class="form-label small fw-bold">Banner Headline</label>
-                    <input type="text" class="form-control" value="The Goodyear Welted Oxford Experience">
+                    <input type="text" name="promo_headline" class="form-control" value="<?= htmlspecialchars($content['promo_headline'] ?? 'The Goodyear Welted Oxford Experience') ?>">
                   </div>
                   <div class="mb-3">
                     <label class="form-label small fw-bold">Call to Action Button</label>
-                    <input type="text" class="form-control" value="Discover The Oxford">
+                    <input type="text" name="promo_btn_text" class="form-control" value="<?= htmlspecialchars($content['promo_btn_text'] ?? 'Discover The Oxford') ?>">
                   </div>
                 </div>
               </div>
 
-              <button type="submit" class="btn btn-dark px-4 py-2">Save Content Revisions</button>
+              <button type="submit" class="btn btn-dark px-4 py-2"><i class="bi bi-check-lg me-1"></i> Save Content Revisions</button>
 
             </div>
 
@@ -140,7 +164,7 @@
                   <h5 class="admin-card-title">Notice</h5>
                 </div>
                 <div class="admin-card-body small text-muted">
-                  Content edits update static presentation prototypes immediately upon saving.
+                  Content revisions saved here directly update the <code>website_content</code> database records for your storefront.
                 </div>
               </div>
             </div>

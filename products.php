@@ -258,7 +258,7 @@ $brands = mysqli_fetch_all($brand_result, MYSQLI_ASSOC);
                         <div class="d-flex gap-1">
                           <a href="../front-site/product-details.html?id=<?= $product['id'] ?>" target="_blank" class="btn btn-sm btn-outline-secondary py-1 px-2" title="View in store"><i class="bi bi-eye"></i></a>
                           <a href="product-edit.php?id=<?= $product['id'] ?>" class="btn btn-sm btn-outline-dark py-1 px-2" title="Edit product"><i class="bi bi-pencil"></i></a>
-                          <button class="btn btn-sm btn-outline-danger py-1 px-2 btn-trigger-delete" data-name="<?= htmlspecialchars($product['name']) ?>" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" title="Delete product"><i class="bi bi-trash"></i></button>
+                          <button class="btn btn-sm btn-outline-danger py-1 px-2 btn-trigger-delete" data-id="<?= $product['id'] ?>" data-name="<?= htmlspecialchars($product['name']) ?>" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" title="Delete product"><i class="bi bi-trash"></i></button>
                         </div>
                       </td>
                     </tr>
@@ -301,15 +301,18 @@ $brands = mysqli_fetch_all($brand_result, MYSQLI_ASSOC);
   <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content border-0 shadow">
-        <div class="modal-body text-center p-4">
-          <div class="text-danger fs-1 mb-2"><i class="bi bi-exclamation-circle"></i></div>
-          <h5 class="fw-bold mb-2">Confirm Delete?</h5>
-          <p class="text-muted small mb-4">Are you sure you want to remove <strong id="deleteTargetName">this item</strong> from the database? This action is simulated for the prototype.</p>
-          <div class="d-flex justify-content-center gap-2">
-            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-sm btn-danger px-3" id="btnConfirmDelete">Delete</button>
+        <form action="actions/delete_product_action.php" method="POST">
+          <input type="hidden" name="id" id="deleteProductId" value="">
+          <div class="modal-body text-center p-4">
+            <div class="text-danger fs-1 mb-2"><i class="bi bi-exclamation-circle"></i></div>
+            <h5 class="fw-bold mb-2">Confirm Delete?</h5>
+            <p class="text-muted small mb-4">Are you sure you want to remove <strong id="deleteTargetName">this item</strong> from the database? This action cannot be undone.</p>
+            <div class="d-flex justify-content-center gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-sm btn-danger px-3">Delete</button>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   </div>

@@ -78,7 +78,7 @@ $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <li><a class="dropdown-item text-danger" href="login.html"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+              <li><a class="dropdown-item text-danger" href="actions/logout_action.php"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
             </ul>
           </div>
         </div>
@@ -138,8 +138,18 @@ $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
                         <?= date('d M, Y h:i A', strtotime($category['created_at'])) ?>
                       </td>  
                       <td>
-                        <button class="btn btn-sm btn-outline-secondary py-1 px-2" title="Edit"><i class="bi bi-pencil"></i></button>
-                        <button class="btn btn-sm btn-outline-danger py-1 px-2" title="Delete"><i class="bi bi-trash"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary py-1 px-2 btn-edit-category" 
+                                data-id="<?= $category['id'] ?>" 
+                                data-name="<?= htmlspecialchars($category['name']) ?>" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#editCatModal" 
+                                title="Edit"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-outline-danger py-1 px-2 btn-trigger-delete" 
+                                data-id="<?= $category['id'] ?>" 
+                                data-name="<?= htmlspecialchars($category['name']) ?>" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#deleteConfirmModal" 
+                                title="Delete"><i class="bi bi-trash"></i></button>
                       </td>
                     </tr>
                   <?php endforeach; ?>
@@ -181,6 +191,33 @@ $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
           </div>
         </div>
 
+        <!-- Edit Category Modal -->
+        <div class="modal fade" id="editCatModal" tabindex="-1" aria-labelledby="editCatModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <form action="actions/update_cat_action.php" method="POST">
+                <input type="hidden" name="id" id="editCatId" value="">
+                <div class="modal-header">
+                  <h5 class="modal-title fs-6 fw-bold" id="editCatModalLabel">Edit Category</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label for="editCategoryName" class="form-label small fw-bold">Category Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="editCategoryName" name="name" placeholder="e.g. Formal Shoes, Loafers" required autofocus>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-sm btn-dark">
+                    <i class="bi bi-check-lg me-1"></i> Update Category
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
       </main>
     </div>
   </div>
@@ -189,21 +226,52 @@ $categories = mysqli_fetch_all($result, MYSQLI_ASSOC);
   <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content border-0 shadow">
-        <div class="modal-body text-center p-4">
-          <div class="text-danger fs-1 mb-2"><i class="bi bi-exclamation-circle"></i></div>
-          <h5 class="fw-bold mb-2">Confirm Delete?</h5>
-          <p class="text-muted small mb-4">Are you sure you want to remove <strong id="deleteTargetName">this item</strong> from the database? This action is simulated for the prototype.</p>
-          <div class="d-flex justify-content-center gap-2">
-            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-sm btn-danger px-3" id="btnConfirmDelete">Delete</button>
+        <form action="actions/delete_cat_action.php" method="POST">
+          <input type="hidden" name="id" id="deleteCatId" value="">
+          <div class="modal-body text-center p-4">
+            <div class="text-danger fs-1 mb-2"><i class="bi bi-exclamation-circle"></i></div>
+            <h5 class="fw-bold mb-2">Confirm Delete?</h5>
+            <p class="text-muted small mb-4">Are you sure you want to remove <strong id="deleteTargetName">this item</strong> from the database? This action cannot be undone.</p>
+            <div class="d-flex justify-content-center gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-sm btn-danger px-3">Delete</button>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/css/dashboard.js"></script>
   <script src="assets/js/dashboard.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Edit category populate
+      document.querySelectorAll('.btn-edit-category').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var id = this.getAttribute('data-id');
+          var name = this.getAttribute('data-name');
+          var idInput = document.getElementById('editCatId');
+          var nameInput = document.getElementById('editCategoryName');
+          if (idInput) idInput.value = id;
+          if (nameInput) nameInput.value = name;
+        });
+      });
+
+      // Delete category populate
+      document.querySelectorAll('.btn-trigger-delete').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var id = this.getAttribute('data-id');
+          var name = this.getAttribute('data-name');
+          var deleteInput = document.getElementById('deleteCatId');
+          var deleteTarget = document.getElementById('deleteTargetName');
+          if (deleteInput && id) deleteInput.value = id;
+          if (deleteTarget && name) deleteTarget.textContent = name;
+        });
+      });
+    });
+  </script>
 </body>
 
 </html>
