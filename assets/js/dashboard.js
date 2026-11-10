@@ -80,7 +80,7 @@ function initDemoModalsAndAlerts() {
       const itemName = this.getAttribute('data-name') || 'this item';
       const itemId = this.getAttribute('data-id');
       const deleteTarget = document.getElementById('deleteTargetName');
-      const deleteInput = document.getElementById('deleteProductId');
+      const deleteInput = document.getElementById('deleteProductId') || document.getElementById('deleteCatId') || document.getElementById('deleteBrandId');
       if (deleteTarget) deleteTarget.textContent = itemName;
       if (deleteInput && itemId) deleteInput.value = itemId;
     });

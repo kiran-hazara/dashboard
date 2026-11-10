@@ -137,8 +137,22 @@ $brands = mysqli_fetch_all($result, MYSQLI_ASSOC);
                   <h5 class="fw-bold fs-6 mb-1"><?= htmlspecialchars($brand['name']) ?></h5>
                   <p class="text-muted small mb-3">Added: <?= date('d M, Y', strtotime($brand['created_at'])) ?></p>
                   <div class="d-flex justify-content-center gap-2 mt-auto">
-                    <button class="btn btn-sm btn-outline-secondary py-1 px-2" title="Edit"><i class="bi bi-pencil me-1"></i> Edit</button>
-                    <button class="btn btn-sm btn-outline-danger py-1 px-2" title="Delete"><i class="bi bi-trash me-1"></i> Delete</button>
+                    <button class="btn btn-sm btn-outline-secondary py-1 px-2 btn-edit-brand" 
+                            data-id="<?= $brand['id'] ?>" 
+                            data-name="<?= htmlspecialchars($brand['name']) ?>" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#editBrandModal" 
+                            title="Edit">
+                      <i class="bi bi-pencil me-1"></i> Edit
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger py-1 px-2 btn-trigger-delete" 
+                            data-id="<?= $brand['id'] ?>" 
+                            data-name="<?= htmlspecialchars($brand['name']) ?>" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#deleteConfirmModal" 
+                            title="Delete">
+                      <i class="bi bi-trash me-1"></i> Delete
+                    </button>
                   </div>
                 </div>
               </div>
@@ -183,6 +197,33 @@ $brands = mysqli_fetch_all($result, MYSQLI_ASSOC);
           </div>
         </div>
 
+        <!-- Edit Brand Modal -->
+        <div class="modal fade" id="editBrandModal" tabindex="-1" aria-labelledby="editBrandModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <form action="actions/update_brand_action.php" method="POST">
+                <input type="hidden" name="id" id="editBrandId" value="">
+                <div class="modal-header">
+                  <h5 class="modal-title fs-6 fw-bold" id="editBrandModalLabel">Edit Brand Label</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label for="editBrandName" class="form-label small fw-bold">Brand Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="editBrandName" name="name" placeholder="e.g. NOVA FORM Black Label, Artisan" required autofocus>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-sm btn-dark">
+                    <i class="bi bi-check-lg me-1"></i> Update Brand
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
       </main>
     </div>
   </div>
@@ -191,21 +232,52 @@ $brands = mysqli_fetch_all($result, MYSQLI_ASSOC);
   <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm">
       <div class="modal-content border-0 shadow">
-        <div class="modal-body text-center p-4">
-          <div class="text-danger fs-1 mb-2"><i class="bi bi-exclamation-circle"></i></div>
-          <h5 class="fw-bold mb-2">Confirm Delete?</h5>
-          <p class="text-muted small mb-4">Are you sure you want to remove <strong id="deleteTargetName">this item</strong> from the database? This action is simulated for the prototype.</p>
-          <div class="d-flex justify-content-center gap-2">
-            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-sm btn-danger px-3" id="btnConfirmDelete">Delete</button>
+        <form action="actions/delete_brand_action.php" method="POST">
+          <input type="hidden" name="id" id="deleteBrandId" value="">
+          <div class="modal-body text-center p-4">
+            <div class="text-danger fs-1 mb-2"><i class="bi bi-exclamation-circle"></i></div>
+            <h5 class="fw-bold mb-2">Confirm Delete?</h5>
+            <p class="text-muted small mb-4">Are you sure you want to remove <strong id="deleteTargetName">this item</strong> from the database? This action cannot be undone.</p>
+            <div class="d-flex justify-content-center gap-2">
+              <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-sm btn-danger px-3">Delete</button>
+            </div>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/css/dashboard.js"></script>
   <script src="assets/js/dashboard.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Edit brand populate
+      document.querySelectorAll('.btn-edit-brand').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var id = this.getAttribute('data-id');
+          var name = this.getAttribute('data-name');
+          var idInput = document.getElementById('editBrandId');
+          var nameInput = document.getElementById('editBrandName');
+          if (idInput) idInput.value = id;
+          if (nameInput) nameInput.value = name;
+        });
+      });
+
+      // Delete brand populate
+      document.querySelectorAll('.btn-trigger-delete').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var id = this.getAttribute('data-id');
+          var name = this.getAttribute('data-name');
+          var deleteInput = document.getElementById('deleteBrandId');
+          var deleteTarget = document.getElementById('deleteTargetName');
+          if (deleteInput && id) deleteInput.value = id;
+          if (deleteTarget && name) deleteTarget.textContent = name;
+        });
+      });
+    });
+  </script>
 </body>
 
 </html>
